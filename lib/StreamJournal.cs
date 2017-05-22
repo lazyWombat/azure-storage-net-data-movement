@@ -15,7 +15,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
 #endif
     using System.Text;
 
-    internal class StreamJournal
+    public class StreamJournal
     {
         //------------------------------------------------------------------------------------------------------
         // 0-255: Journal format version string: Assembly name + version

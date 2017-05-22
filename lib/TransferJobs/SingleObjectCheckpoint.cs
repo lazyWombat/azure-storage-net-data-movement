@@ -18,7 +18,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
 #else
     [DataContract]
 #endif // BINARY_SERIALIZATION
-    internal sealed class SingleObjectCheckpoint
+    public sealed class SingleObjectCheckpoint
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SingleObjectCheckpoint"/> class.

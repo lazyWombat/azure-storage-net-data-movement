@@ -11,7 +11,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
     using System.Threading;
     using System.Threading.Tasks;
 
-    internal abstract class TransferReaderWriterBase : IDisposable
+    public abstract class TransferReaderWriterBase : IDisposable
     {
         protected TransferReaderWriterBase(
             TransferScheduler scheduler,

@@ -11,7 +11,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     using System.Runtime.Serialization;
     [DataContract]
 #endif // BINARY_SERIALIZATION
-    internal abstract class JournalItem
+    public abstract class JournalItem
     {
         public StreamJournal Journal
         {

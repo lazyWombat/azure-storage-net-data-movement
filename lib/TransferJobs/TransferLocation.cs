@@ -11,7 +11,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
 #if !BINARY_SERIALIZATION
     [DataContract]
 #endif
-    internal abstract class TransferLocation
+    public abstract class TransferLocation
     {
         /// <summary>
         /// Gets transfer location type.

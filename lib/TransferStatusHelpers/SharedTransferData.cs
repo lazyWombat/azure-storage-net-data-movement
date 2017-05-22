@@ -8,7 +8,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     using System;
     using System.Collections.Concurrent;
 
-    internal class SharedTransferData
+    public class SharedTransferData
     {
         private long totalLength;
 

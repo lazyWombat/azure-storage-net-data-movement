@@ -32,7 +32,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     [KnownType(typeof(UriLocation))]
     [DataContract]
 #endif // BINARY_SERIALIZATION
-    internal class SingleObjectTransfer : Transfer
+    public class SingleObjectTransfer : Transfer
     {
         private const string TransferJobName = "TransferJob";
 

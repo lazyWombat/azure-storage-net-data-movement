@@ -10,7 +10,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     /// <summary>
     /// Calculate and show transfer speed.
     /// </summary>
-    internal abstract class TransferDataState : IDisposable
+    public abstract class TransferDataState : IDisposable
     {
         /// <summary>
         /// Gets or sets a handle to the memory buffer to ensure the

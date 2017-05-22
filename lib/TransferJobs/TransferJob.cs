@@ -27,7 +27,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     // StreamLocation intentionally omitted because it is not serializable
     [KnownType(typeof(UriLocation))]
 #endif // BINARY_SERIALIZATION
-    internal class TransferJob
+    public class TransferJob
 #if BINARY_SERIALIZATION
         : ISerializable
 #endif // BINARY_SERIALIZATION

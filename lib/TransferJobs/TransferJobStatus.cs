@@ -11,7 +11,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     ///            -> Transfer -> [Monitor ->] Finished.
     ///                                        Failed.
     /// </summary>
-    internal enum TransferJobStatus
+    public enum TransferJobStatus
     {
         /// <summary>
         /// Transfer is not started.
