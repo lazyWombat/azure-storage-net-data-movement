@@ -44,9 +44,9 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             {
                 transferJob.CheckPoint = new SingleObjectCheckpoint();
             }
-
-            this.reader = this.GetReader(transferJob.Source);
-            this.writer = this.GetWriter(transferJob.Destination);
+            
+            reader = this.GetReader(transferJob.Source, transferJob.Transfer?.Context);
+            writer = this.GetWriter(transferJob.Destination, transferJob.Transfer?.Context);
 
             this.SharedTransferData.OnTotalLengthChanged += (sender, args) =>
             {
@@ -132,16 +132,21 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             this.ErrorOccurred = true;
         }
 
-        private TransferReaderWriterBase GetReader(TransferLocation sourceLocation)
+        private TransferReaderWriterBase GetReader(TransferLocation sourceLocation, TransferContext transferContext)
         {
             switch (sourceLocation.Type)
             {
                 case TransferLocationType.Stream:
-                    return new StreamedReader(this.Scheduler, this, this.CancellationToken);
+                    return transferContext?.CreateReaderCallback?.Invoke(sourceLocation.Type, null, this.Scheduler, this, this.CancellationToken)
+                        ?? new StreamedReader(this.Scheduler, this, this.CancellationToken);
                 case TransferLocationType.FilePath:
-                    return new StreamedReader(this.Scheduler, this, this.CancellationToken);
+                    return transferContext?.CreateReaderCallback?.Invoke(sourceLocation.Type, null, this.Scheduler, this, this.CancellationToken)
+                           ?? new StreamedReader(this.Scheduler, this, this.CancellationToken);
                 case TransferLocationType.AzureBlob:
                     CloudBlob sourceBlob = (sourceLocation as AzureBlobLocation).Blob;
+                    var customReader = transferContext?.CreateReaderCallback?.Invoke(sourceLocation.Type, sourceBlob,
+                        this.Scheduler, this, this.CancellationToken);
+                    if (customReader != null) return customReader;
                     if (sourceBlob is CloudPageBlob)
                     {
                         return new PageBlobReader(this.Scheduler, this, this.CancellationToken);
@@ -173,16 +178,21 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             }
         }
 
-        private TransferReaderWriterBase GetWriter(TransferLocation destLocation)
+        private TransferReaderWriterBase GetWriter(TransferLocation destLocation, TransferContext transferContext)
         {
             switch (destLocation.Type)
             {
-                case TransferLocationType.Stream:
-                    return new StreamedWriter(this.Scheduler, this, this.CancellationToken);
+                case TransferLocationType.Stream:                    
+                    return transferContext?.CreateWriterCallback?.Invoke(destLocation.Type, null, this.Scheduler, this, this.CancellationToken)
+                        ?? new StreamedWriter(this.Scheduler, this, this.CancellationToken);
                 case TransferLocationType.FilePath:
-                    return new StreamedWriter(this.Scheduler, this, this.CancellationToken);
+                    return transferContext?.CreateWriterCallback?.Invoke(destLocation.Type, null, this.Scheduler, this, this.CancellationToken)
+                        ?? new StreamedWriter(this.Scheduler, this, this.CancellationToken);
                 case TransferLocationType.AzureBlob:
                     CloudBlob destBlob = (destLocation as AzureBlobLocation).Blob;
+                    var customWriter = transferContext?.CreateWriterCallback?.Invoke(destLocation.Type, destBlob,
+                        this.Scheduler, this, this.CancellationToken);
+                    if (customWriter != null) return customWriter;
                     if (destBlob is CloudPageBlob)
                     {
                         return new PageBlobWriter(this.Scheduler, this, this.CancellationToken);

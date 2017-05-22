@@ -3,6 +3,10 @@
 //    Copyright (c) Microsoft Corporation
 // </copyright>
 //------------------------------------------------------------------------------
+
+using System.Threading;
+using Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers;
+
 namespace Microsoft.WindowsAzure.Storage.DataMovement
 {
     /// <summary>
@@ -31,4 +35,11 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     /// </summary>
     /// <param name="destination">Instance of destination to be overwritten.</param>
     public delegate void SetAttributesCallback(object destination);
+
+    public delegate TransferReaderWriterBase CreateReaderWriterCallback(
+        TransferLocationType locationType,
+        object source,
+        TransferScheduler scheduler,
+        TransferControllerBase controller,
+        CancellationToken cancellationToken);
 }

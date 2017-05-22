@@ -171,6 +171,9 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
             private set;
         }
 
+        public CreateReaderWriterCallback CreateReaderCallback { get; set; }
+        public CreateReaderWriterCallback CreateWriterCallback { get; set; }
+
         internal void OnTransferSuccess(TransferEventArgs eventArgs)
         {
             EventHandler<TransferEventArgs> handler = this.FileTransferred;
