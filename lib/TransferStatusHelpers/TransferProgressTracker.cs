@@ -17,7 +17,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
 #else
     [DataContract]
 #endif // BINARY_SERIALIZATION
-    internal class TransferProgressTracker : JournalItem
+    public class TransferProgressTracker : JournalItem
 #if BINARY_SERIALIZATION
         , ISerializable
 #endif // BINARY_SERIALIZATION

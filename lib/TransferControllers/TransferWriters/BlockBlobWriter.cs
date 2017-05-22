@@ -18,7 +18,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
     using System.Threading.Tasks;
     using Microsoft.WindowsAzure.Storage.Blob;
 
-    internal sealed class BlockBlobWriter : TransferReaderWriterBase
+    public class BlockBlobWriter : TransferReaderWriterBase
     {
         private volatile State state;
         private SortedDictionary<int, string> blockIds;

@@ -12,7 +12,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
     using System.Threading.Tasks;
     using Microsoft.WindowsAzure.Storage.DataMovement;
 
-    internal abstract class TransferControllerBase : ITransferController, IDisposable
+    public abstract class TransferControllerBase : ITransferController, IDisposable
     {
         /// <summary>
         /// Count of active tasks in this controller.

@@ -6,7 +6,7 @@
 
 namespace Microsoft.WindowsAzure.Storage.DataMovement
 {
-    internal enum TransferMethod
+    public enum TransferMethod
     {
         /// <summary>
         /// To read data from source to memory and then write the data in memory to destination.

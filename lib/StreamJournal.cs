@@ -15,7 +15,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     using System.Runtime.Serialization.Formatters.Binary;
 #endif
 
-    internal class StreamJournal
+    public class StreamJournal
     {
         //------------------------------------------------------------------------------------------------------
         // 0-255: Journal format version string: Assembly name + version

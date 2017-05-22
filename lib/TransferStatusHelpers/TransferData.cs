@@ -8,7 +8,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
 {
     using System.IO;
 
-    internal class TransferData : TransferDataState
+    public class TransferData : TransferDataState
     {
         private MemoryManager memoryManager;
 

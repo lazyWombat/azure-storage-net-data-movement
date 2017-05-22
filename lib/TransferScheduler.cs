@@ -19,7 +19,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     /// TransferScheduler class, used for  transferring Microsoft Azure
     /// Storage objects.
     /// </summary>
-    internal sealed class TransferScheduler : IDisposable
+    public sealed class TransferScheduler : IDisposable
     {
         /// <summary>
         /// Main collection of transfer controllers.

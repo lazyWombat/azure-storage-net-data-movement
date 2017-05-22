@@ -12,7 +12,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     using System.Text;
     using System.Threading.Tasks;
 
-    internal class Attributes
+    public class Attributes
     {
         /// <summary>
         /// Gets or sets the cache-control value stored for blob/azure file.

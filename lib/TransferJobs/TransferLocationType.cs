@@ -6,7 +6,7 @@
 
 namespace Microsoft.WindowsAzure.Storage.DataMovement
 {
-    internal enum TransferLocationType
+    public enum TransferLocationType
     {
         FilePath,
         Stream,

@@ -14,7 +14,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     /// <summary>
     /// Class for maintaining a pool of memory buffer objects.
     /// </summary>
-    internal class MemoryManager
+    public class MemoryManager
     {
         private MemoryPool memoryPool;
 

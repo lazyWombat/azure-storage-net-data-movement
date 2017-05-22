@@ -31,7 +31,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     [KnownType(typeof(MultipleObjectsTransfer))]
     [KnownType(typeof(DirectoryTransfer))]
 #endif
-    internal abstract class Transfer : JournalItem, IDisposable
+    public abstract class Transfer : JournalItem, IDisposable
 #if BINARY_SERIALIZATION
         , ISerializable
 #endif // BINARY_SERIALIZATION
