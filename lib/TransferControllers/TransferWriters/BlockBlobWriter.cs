@@ -216,6 +216,8 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                 Debug.Assert(
                     this.destLocation.Blob.Properties.BlobType == BlobType.BlockBlob,
                     "BlobType should be BlockBlob if we reach here.");
+
+                HandleExistingBlob(this.destLocation.Blob);
             }
 
             // Only do calculation related to transfer window when the file contains multiple chunks.
@@ -283,6 +285,11 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             }
         }
 
+        protected virtual void HandleExistingBlob(CloudBlob blob)
+        {
+            // do nothing
+        }
+
         private string GenerateBlockIdPrefix()
         {
             // var blockIdPrefix = Guid.NewGuid().ToString("N") + "-";
@@ -304,6 +311,14 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             // To keep the compatibility, add 9 chars to the end of the hash ( 33 - 24)
             var blockIdPrefix = blobNameHash + "12345678-";
             return blockIdPrefix;
+        }
+
+        /// <summary>
+        /// return true to write the block or false to leave the exiting block unchanged
+        /// </summary>
+        protected virtual bool ShouldWriteBlock(TransferData transferData)
+        {
+            return true;
         }
 
         private async Task UploadBlobAsync()
@@ -330,8 +345,9 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                             transferData.Stream = new ChunkedMemoryStream(transferData.MemoryBuffer, 0, transferData.Length);
                         }
 
-                        await Utils.ExecuteXsclApiCallAsync(
-                            async () => await this.blockBlob.PutBlockAsync(
+                        if (ShouldWriteBlock(transferData))
+                        {
+                            await Utils.ExecuteXsclApiCallAsync(async () => await this.blockBlob.PutBlockAsync(
                                 this.GetBlockId(transferData.StartOffset),
                                 transferData.Stream,
                                 null,
@@ -340,7 +356,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                                 Utils.GenerateOperationContext(this.Controller.TransferContext),
                                 this.CancellationToken),
                             this.CancellationToken);
-
+                        }
                     }
                 }
 
@@ -378,6 +394,14 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             // 4. Call CommitAsync again since workToken is 1.
         }
 
+        /// <summary>
+        /// Add additional attributes if needed
+        /// </summary>
+        protected virtual Task SetAdditionalAttributes(CloudBlockBlob blob)
+        {
+            return Task.FromResult(false);
+        }
+
         private async Task CommitAsync()
         {
             Debug.Assert(
@@ -392,6 +416,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             }
 
             Utils.SetAttributes(this.blockBlob, this.SharedTransferData.Attributes);
+            await SetAdditionalAttributes(this.blockBlob);
             await this.Controller.SetCustomAttributesAsync(this.blockBlob);
 
             BlobRequestOptions blobRequestOptions = Utils.GenerateBlobRequestOptions(this.destLocation.BlobRequestOptions);
@@ -622,7 +647,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             }
         }
 
-        private string GetBlockId(long startOffset)
+        protected string GetBlockId(long startOffset)
         {
             Debug.Assert(startOffset % this.SharedTransferData.BlockSize == 0, "Block startOffset should be multiples of block size.");
 
@@ -653,6 +678,16 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             }
 
             return blockId;
+        }
+        
+        /// <summary>
+        /// Returns the index of the block
+        /// </summary>
+        protected int GetBlockIndex(long startOffset)
+        {
+            Debug.Assert(startOffset % this.SharedTransferData.BlockSize == 0, "Block startOffset should be multiples of block size.");
+
+            return (int)(startOffset / this.SharedTransferData.BlockSize);
         }
     }
 }
