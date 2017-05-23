@@ -46,7 +46,7 @@
     <DocumentationFile>bin\Release\Microsoft.WindowsAzure.Storage.DataMovement.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <DelaySign>true</DelaySign>
     <AssemblyOriginatorKeyFile>..\tools\strongnamekeys\fake\windows.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
