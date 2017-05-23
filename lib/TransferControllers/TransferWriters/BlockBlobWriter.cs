@@ -209,6 +209,8 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                 Debug.Assert(
                     this.destLocation.Blob.Properties.BlobType == BlobType.BlockBlob, 
                     "BlobType should be BlockBlob if we reach here.");
+
+                HandleExistingBlob(this.destLocation.Blob);
             }
 
             var checkpoint = this.SharedTransferData.TransferJob.CheckPoint;
@@ -256,7 +258,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             this.state = State.UploadBlob;
 
             this.FinishBlock();
-	}
+	    }
 
         private void PrepareForPutBlob()
         {
@@ -268,6 +270,11 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             {
                 this.state = State.UploadBlobAndSetAttributes;
             }
+        }
+
+        protected virtual void HandleExistingBlob(CloudBlob blob)
+        {
+            // do nothing
         }
 
         private string GenerateBlockIdPrefix()
@@ -291,6 +298,14 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             // To keep the compatibility, add 9 chars to the end of the hash ( 33 - 24)
             var blockIdPrefix = blobNameHash + "12345678-";
             return blockIdPrefix;
+        }
+
+        /// <summary>
+        /// return true to write the block or false to leave the exiting block unchanged
+        /// </summary>
+        protected virtual bool ShouldWriteBlock(TransferData transferData)
+        {
+            return true;
         }
 
         private async Task UploadBlobAsync()
@@ -317,15 +332,17 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                             transferData.Stream = new ChunkedMemoryStream(transferData.MemoryBuffer, 0, transferData.Length);
                         }
 
-                        await this.blockBlob.PutBlockAsync(
-                            this.GetBlockId(transferData.StartOffset),
-                            transferData.Stream,
-                            null,
-                            Utils.GenerateConditionWithCustomerCondition(this.destLocation.AccessCondition, true),
-                            Utils.GenerateBlobRequestOptions(this.destLocation.BlobRequestOptions),
-                            Utils.GenerateOperationContext(this.Controller.TransferContext),
-                            this.CancellationToken);
-                    }
+                        if (ShouldWriteBlock(transferData))
+                        {
+                            await this.blockBlob.PutBlockAsync(
+                                this.GetBlockId(transferData.StartOffset),
+                                transferData.Stream,
+                                null,
+                                Utils.GenerateConditionWithCustomerCondition(this.destLocation.AccessCondition, true),
+                                Utils.GenerateBlobRequestOptions(this.destLocation.BlobRequestOptions),
+                                Utils.GenerateOperationContext(this.Controller.TransferContext),
+                                this.CancellationToken);
+                        }
                 }
 
                 this.Controller.UpdateProgress(() =>
@@ -354,6 +371,14 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             // 4. Call CommitAsync again since hasWork is true.
         }
 
+        /// <summary>
+        /// Add additional attributes if needed
+        /// </summary>
+        protected virtual Task SetAdditionalAttributes(CloudBlockBlob blob)
+        {
+            return Task.FromResult(false);
+        }
+
         private async Task CommitAsync()
         {
             Debug.Assert(
@@ -365,6 +390,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             this.hasWork = false;
 
             Utils.SetAttributes(this.blockBlob, this.SharedTransferData.Attributes);
+            await SetAdditionalAttributes(this.blockBlob);
             await this.Controller.SetCustomAttributesAsync(this.blockBlob);
 
             BlobRequestOptions blobRequestOptions = Utils.GenerateBlobRequestOptions(this.destLocation.BlobRequestOptions);
@@ -615,6 +641,22 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             }
 
             return blockId;
+        }
+        
+        /// <summary>
+        /// Returns the index of the block
+        /// </summary>
+        protected int GetBlockIndex(long startOffset)
+        {
+            Debug.Assert(startOffset % this.SharedTransferData.BlockSize == 0, "Block startOffset should be multiples of block size.");
+
+            return (int)(startOffset / this.SharedTransferData.BlockSize);
+        }
+
+        protected string GetBlockId(long startOffset)
+        {
+            var count = GetBlockIndex(startOffset);
+            return this.blockIdSequence[count];
         }
     }
 }
