@@ -62,6 +62,11 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         }
 
         /// <summary>
+        /// Gets the number of bytes that have been skipped.
+        /// </summary>
+        public long BytesSkipped { get; internal set; }
+
+        /// <summary>
         /// Gets the number of files that have been transferred.
         /// </summary>
         public long NumberOfFilesTransferred

@@ -316,9 +316,10 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                 "Current state is {0}", 
                 this.state);
             TransferData transferData = this.GetFirstAvailable();
-
+            
             if (null != transferData)
             {
+                var isSkipped = true;
                 using (transferData)
                 {
                     if (0 != transferData.Length)
@@ -342,7 +343,9 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                                 Utils.GenerateBlobRequestOptions(this.destLocation.BlobRequestOptions),
                                 Utils.GenerateOperationContext(this.Controller.TransferContext),
                                 this.CancellationToken);
+                            isSkipped = false;
                         }
+                    }
                 }
 
                 this.Controller.UpdateProgress(() =>
@@ -355,7 +358,14 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                     this.SharedTransferData.TransferJob.Transfer.UpdateJournal();
 
                     // update progress
-                    this.Controller.UpdateProgressAddBytesTransferred(transferData.Length);
+                    if (isSkipped)
+                    {
+                        this.Controller.UpdateProgressAddBytesSkipped(transferData.Length);
+                    }
+                    else
+                    {
+                        this.Controller.UpdateProgressAddBytesTransferred(transferData.Length);
+                    }
                 });
 
                 Interlocked.Add(ref this.uploadedLength, transferData.Length);

@@ -258,6 +258,11 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
 
         }
 
+        public void UpdateProgressAddBytesSkipped(long bytesSkippedToAdd)
+        {
+            this.TransferJob.Transfer.ProgressTracker.AddBytesSkipped(bytesSkippedToAdd);
+        }
+
         public void UpdateProgressAddBytesTransferred(long bytesTransferredToAdd)
         {
             this.TransferJob.Transfer.ProgressTracker.AddBytesTransferred(bytesTransferredToAdd);

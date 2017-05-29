@@ -1404,6 +1404,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
             return new TransferStatus()
             {
                 BytesTransferred = progress.BytesTransferred,
+                BytesSkipped = progress.BytesSkipped,
                 NumberOfFilesTransferred = progress.NumberOfFilesTransferred,
                 NumberOfFilesSkipped = progress.NumberOfFilesSkipped,
                 NumberOfFilesFailed = progress.NumberOfFilesFailed
