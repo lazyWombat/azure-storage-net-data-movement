@@ -329,9 +329,10 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                 "Current state is {0}",
                 this.state);
             TransferData transferData = this.GetFirstAvailable();
-
+            
             if (null != transferData)
             {
+                var isSkipped = true;
                 using (transferData)
                 {
                     if (0 != transferData.Length)
@@ -356,6 +357,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                                 Utils.GenerateOperationContext(this.Controller.TransferContext),
                                 this.CancellationToken),
                             this.CancellationToken);
+                            isSkipped = false;
                         }
                     }
                 }
@@ -363,7 +365,15 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                 // Skip transfer window calculation and related journal recording operations when it's file with only one chunk.
                 if (this.EnableOneChunkFileOptimization)
                 {
-                    this.Controller.UpdateProgressAddBytesTransferred(transferData.Length);
+                    // update progress
+                    if (isSkipped)
+                    {
+                        this.Controller.UpdateProgressAddBytesSkipped(transferData.Length);
+                    }
+                    else
+                    {
+                        this.Controller.UpdateProgressAddBytesTransferred(transferData.Length);
+                    }
                 }
                 else
                 {
@@ -376,8 +386,15 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
 
                         this.SharedTransferData.TransferJob.Transfer.UpdateJournal();
 
-                    // update progress
-                    this.Controller.UpdateProgressAddBytesTransferred(transferData.Length);
+                        // update progress
+                        if (isSkipped)
+                        {
+                            this.Controller.UpdateProgressAddBytesSkipped(transferData.Length);
+                        }
+                        else
+                        {
+                            this.Controller.UpdateProgressAddBytesTransferred(transferData.Length);
+                        }
                     });
                 }
 

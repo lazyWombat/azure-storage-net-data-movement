@@ -23,6 +23,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
 #endif // BINARY_SERIALIZATION
     {
         private const string BytesTransferredName = "BytesTransferred";
+        private const string BytesSkippedName = "BytesSkipped";
         private const string FilesTransferredName = "FilesTransferred";
         private const string FilesSkippedName = "FilesSkipped";
         private const string FilesFailedName = "FilesFailed";
@@ -34,6 +35,8 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         [DataMember]
 #endif
         private long bytesTransferred;
+
+        private long bytesSkipped;
 
         /// <summary>
         /// Stores the number of files that have been transferred.
@@ -89,6 +92,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
             }
 
             this.bytesTransferred = info.GetInt64(BytesTransferredName);
+            this.bytesSkipped = info.GetInt64(BytesSkippedName);
             this.numberOfFilesTransferred = info.GetInt64(FilesTransferredName);
             this.numberOfFilesSkipped = info.GetInt64(FilesSkippedName);
             this.numberOfFilesFailed = info.GetInt64(FilesFailedName);
@@ -101,6 +105,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         private TransferProgressTracker(TransferProgressTracker other)
         {
             this.bytesTransferred = other.BytesTransferred;
+            this.bytesSkipped = other.BytesSkipped;
             this.numberOfFilesTransferred = other.NumberOfFilesTransferred;
             this.numberOfFilesSkipped = other.NumberOfFilesSkipped;
             this.numberOfFilesFailed = other.NumberOfFilesFailed;
@@ -136,6 +141,17 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         }
 
         /// <summary>
+        /// Gets the number of bytes that have been skipped.
+        /// </summary>
+        public long BytesSkipped
+        {
+            get
+            {
+                return Interlocked.Read(ref this.bytesSkipped);
+            }
+        }
+
+        /// <summary>
         /// Gets the number of files that have been transferred.
         /// </summary>
         public long NumberOfFilesTransferred
@@ -167,6 +183,25 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
             {
                 return Interlocked.Read(ref this.numberOfFilesFailed);
             }
+        }
+
+        /// <summary>
+        /// Updates the current status by indicating the bytes skipped.
+        /// </summary>
+        /// <param name="bytesToIncrease">Indicating by how much the bytes skipped increased.</param>
+        public void AddBytesSkipped(long bytesToIncrease)
+        {
+            if (bytesToIncrease != 0)
+            {
+                Interlocked.Add(ref this.bytesSkipped, bytesToIncrease);
+
+                if (this.Parent != null)
+                {
+                    this.Parent.AddBytesSkipped(bytesToIncrease);
+                }
+            }
+
+            this.InvokeProgressHandler();
         }
 
         /// <summary>
@@ -247,6 +282,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         public void AddProgress(TransferProgressTracker progressTracker)
         {
             this.AddBytesTransferred(progressTracker.BytesTransferred);
+            this.AddBytesSkipped(progressTracker.BytesSkipped);
             this.AddNumberOfFilesFailed(progressTracker.NumberOfFilesFailed);
             this.AddNumberOfFilesSkipped(progressTracker.NumberOfFilesSkipped);
             this.AddNumberOfFilesTransferred(progressTracker.NumberOfFilesTransferred);
@@ -275,6 +311,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
             }
 
             info.AddValue(BytesTransferredName, this.BytesTransferred);
+            info.AddValue(BytesSkippedName, this.BytesSkipped);
             info.AddValue(FilesTransferredName, this.NumberOfFilesTransferred);
             info.AddValue(FilesSkippedName, this.NumberOfFilesSkipped);
             info.AddValue(FilesFailedName, this.NumberOfFilesFailed);
@@ -297,6 +334,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
                             new TransferStatus()
                             {
                                 BytesTransferred = this.BytesTransferred,
+                                BytesSkipped = this.BytesSkipped,
                                 NumberOfFilesTransferred = this.NumberOfFilesTransferred,
                                 NumberOfFilesSkipped = this.NumberOfFilesSkipped,
                                 NumberOfFilesFailed = this.NumberOfFilesFailed,
