@@ -217,7 +217,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                     this.destLocation.Blob.Properties.BlobType == BlobType.BlockBlob,
                     "BlobType should be BlockBlob if we reach here.");
 
-                HandleExistingBlob(this.destLocation.Blob);
+                await HandleExistingBlob(this.destLocation.Blob);
             }
 
             // Only do calculation related to transfer window when the file contains multiple chunks.
@@ -285,9 +285,9 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             }
         }
 
-        protected virtual void HandleExistingBlob(CloudBlob blob)
+        protected virtual Task HandleExistingBlob(CloudBlob blob)
         {
-            // do nothing
+            return Task.FromResult(false);
         }
 
         private string GenerateBlockIdPrefix()
