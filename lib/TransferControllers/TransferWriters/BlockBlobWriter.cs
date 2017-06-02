@@ -139,15 +139,15 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                 catch (StorageException se)
                 {
 #endif
-                    this.HandleFetchAttributesResult(se);
+                    await this.HandleFetchAttributesResult(se);
                     return;
                 }
             }
 
-            this.HandleFetchAttributesResult(null);
+            await this.HandleFetchAttributesResult(null);
         }
 
-        private void HandleFetchAttributesResult(Exception e)
+        private async Task HandleFetchAttributesResult(Exception e)
         {
             bool existingBlob = !this.Controller.IsForceOverwrite;
 
@@ -210,7 +210,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                     this.destLocation.Blob.Properties.BlobType == BlobType.BlockBlob, 
                     "BlobType should be BlockBlob if we reach here.");
 
-                HandleExistingBlob(this.destLocation.Blob);
+                await HandleExistingBlob(this.destLocation.Blob);
             }
 
             var checkpoint = this.SharedTransferData.TransferJob.CheckPoint;
@@ -272,9 +272,9 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             }
         }
 
-        protected virtual void HandleExistingBlob(CloudBlob blob)
+        protected virtual Task HandleExistingBlob(CloudBlob blob)
         {
-            // do nothing
+            return Task.FromResult(false);
         }
 
         private string GenerateBlockIdPrefix()
