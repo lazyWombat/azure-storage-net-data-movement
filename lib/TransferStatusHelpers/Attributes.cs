@@ -47,12 +47,14 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// <summary>
         /// Gets or sets the user-defined metadata for blob/azure file.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public IDictionary<string, string> Metadata { get; set; }
 
         /// <summary>
         /// Gets or sets a value to indicate whether to overwrite all attribute on destination,
         /// or keep its original value if it's not set.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "OverWrite")]
         public bool OverWriteAll { get; set; }
     }
 }

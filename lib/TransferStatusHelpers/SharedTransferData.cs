@@ -39,6 +39,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// <summary>
         /// Gets or sets list of available transfer data from source.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ConcurrentDictionary<long, TransferData> AvailableData { get; set; }
 
         /// <summary>

@@ -4,6 +4,8 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
+using System.Diagnostics;
+
 namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
 {
     using System;
@@ -249,7 +251,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             try
             {
                 this.TransferJob.ProgressUpdateLock?.EnterReadLock();
-                updateAction();
+                updateAction?.Invoke();
             }
             finally
             {

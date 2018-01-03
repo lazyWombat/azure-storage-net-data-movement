@@ -683,7 +683,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             return GetBlockIdByIndex(index);
         }
 
-        private string GetBlockIdByIndex(int index)
+        protected string GetBlockIdByIndex(int index)
         {
             string blockIdSuffix = index.ToString("D6", CultureInfo.InvariantCulture);
             byte[] blockIdInBytes = System.Text.Encoding.UTF8.GetBytes(this.destLocation.BlockIdPrefix + blockIdSuffix);

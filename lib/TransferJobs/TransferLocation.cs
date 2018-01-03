@@ -16,6 +16,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// <summary>
         /// Gets transfer location type.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
         public abstract TransferLocationType Type
         {
             get;

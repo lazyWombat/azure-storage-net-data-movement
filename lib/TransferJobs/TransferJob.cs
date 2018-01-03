@@ -57,6 +57,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// </summary>
         /// <param name="info">Serialization information.</param>
         /// <param name="context">Streaming context.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         protected TransferJob(SerializationInfo info, StreamingContext context)
         {
             if (info.GetBoolean(CheckedOverwriteName))
@@ -151,6 +152,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
 #if !BINARY_SERIALIZATION
         [DataMember]
 #endif
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "CheckPoint")]
         public SingleObjectCheckpoint CheckPoint
         {
             get;

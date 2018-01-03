@@ -53,6 +53,8 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// <param name="source">Transfer source.</param>
         /// <param name="dest">Transfer destination.</param>
         /// <param name="transferMethod">Transfer method, see <see cref="TransferMethod"/> for detail available methods.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         public SingleObjectTransfer(TransferLocation source, TransferLocation dest, TransferMethod transferMethod)
             : base(source, dest, transferMethod)
         {
