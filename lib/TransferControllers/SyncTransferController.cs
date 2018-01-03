@@ -132,6 +132,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             this.ErrorOccurred = true;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private TransferReaderWriterBase GetReader(TransferLocation sourceLocation, TransferContext transferContext)
         {
             switch (sourceLocation.Type)
@@ -178,6 +179,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private TransferReaderWriterBase GetWriter(TransferLocation destLocation, TransferContext transferContext)
         {
             switch (destLocation.Type)

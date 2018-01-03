@@ -279,6 +279,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
             this.InvokeProgressHandler();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         public void AddProgress(TransferProgressTracker progressTracker)
         {
             this.AddBytesTransferred(progressTracker.BytesTransferred);

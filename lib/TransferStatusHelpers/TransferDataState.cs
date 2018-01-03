@@ -16,6 +16,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// Gets or sets a handle to the memory buffer to ensure the
         /// memory buffer remains in memory during the entire operation.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public byte[][] MemoryBuffer
         {
             get;

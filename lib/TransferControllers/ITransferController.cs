@@ -8,7 +8,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
     using System;
     using System.Threading.Tasks;
 
-    internal interface ITransferController
+    public interface ITransferController
     {
         bool HasWork
         {

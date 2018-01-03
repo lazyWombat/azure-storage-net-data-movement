@@ -86,6 +86,8 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// Gets or sets transfer window of this transfer entry.
         /// </summary>
         /// <value>Transfer window of this transfer entry.</value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public List<long> TransferWindow
         {
             get;

@@ -28,6 +28,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
         /// For producer, preprocess is to validate source and fetch block list/page ranges;
         /// For consumer, preprocess is to open or create destination.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "PreProcessed")]
         public virtual bool PreProcessed
         {
             get;
@@ -92,6 +93,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
 
         public abstract Task DoWorkInternalAsync();
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public TransferData GetFirstAvailable()
         {
             TransferData transferData = null;

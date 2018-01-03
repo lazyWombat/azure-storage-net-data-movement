@@ -31,6 +31,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
     [KnownType(typeof(MultipleObjectsTransfer))]
     [KnownType(typeof(DirectoryTransfer))]
 #endif
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors")]
     public abstract class Transfer : JournalItem, IDisposable
 #if BINARY_SERIALIZATION
         , ISerializable
@@ -152,6 +153,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// <summary>
         /// Initializes a new instance of the <see cref="Transfer"/> class.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         protected Transfer(Transfer other)
         {
             this.Source = other.Source;
@@ -273,6 +275,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// <returns>A task representing the transfer operation.</returns>
         public abstract Task ExecuteAsync(TransferScheduler scheduler, CancellationToken cancellationToken);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         public void UpdateTransferJobStatus(TransferJob transferJob, TransferJobStatus targetStatus)
         {
             lock (this.ProgressTracker)
