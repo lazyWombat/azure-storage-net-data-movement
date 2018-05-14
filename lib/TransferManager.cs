@@ -114,6 +114,12 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
             if (options != null)
             {
                 destLocation.AccessCondition = options.DestinationAccessCondition;
+                if (options.RetryPolicy != null)
+                {
+                    var requestOptions = Transfer_RequestOptions.DefaultBlobRequestOptions;                    
+                    requestOptions.RetryPolicy = options.RetryPolicy;
+                    destLocation.BlobRequestOptions = requestOptions;
+                }
             }
 
             return UploadInternalAsync(sourceLocation, destLocation, context, cancellationToken);
