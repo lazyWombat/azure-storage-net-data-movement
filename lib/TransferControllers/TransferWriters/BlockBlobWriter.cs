@@ -59,6 +59,8 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             Finished
         };
 
+        protected string WriterState => this.state.ToString();
+
         public override bool PreProcessed
         {
             get;
@@ -237,6 +239,12 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                 }
             }
             
+            this.Prepare();
+            this.PreProcessed = true;
+        }
+
+        protected virtual void Prepare()
+        {
             var singlePutBlobSizeThreshold = Math.Min(this.SharedTransferData.BlockSize, Constants.MaxSinglePutBlobSize);
 
             if (this.SharedTransferData.TotalLength > 0
@@ -253,7 +261,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             this.workToken = 1;
         }
 
-        private void PrepareForPutBlockAndPutBlockList()
+        protected void PrepareForPutBlockAndPutBlockList()
         {
             if (string.IsNullOrEmpty(this.destLocation.BlockIdPrefix))
             {
@@ -273,7 +281,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             this.FinishBlock();
         }
 
-        private void PrepareForPutBlob()
+        protected void PrepareForPutBlob()
         {
             if (this.SharedTransferData.TotalLength == this.uploadedLength)
             {
