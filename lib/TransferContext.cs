@@ -204,5 +204,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
                 handler(this, eventArgs);
             }
         }
+
+        public Action<OperationContext> OperationContextInitializer { get; set; }
     }
 }

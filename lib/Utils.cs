@@ -346,6 +346,8 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
                 operationContext.ClientRequestID = transferContext.ClientRequestId;
             }
 
+            transferContext.OperationContextInitializer?.Invoke(operationContext);
+            
             return operationContext;
         }
 
