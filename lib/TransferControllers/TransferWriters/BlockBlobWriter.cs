@@ -354,10 +354,11 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
                             transferData.Stream = new ChunkedMemoryStream(transferData.MemoryBuffer, 0, transferData.Length);
                         }
 
+                        var blockId = this.GetBlockId(transferData.StartOffset);
                         if (ShouldWriteBlock(transferData))
                         {
                             await Utils.ExecuteXsclApiCallAsync(async () => await this.blockBlob.PutBlockAsync(
-                                this.GetBlockId(transferData.StartOffset),
+                                blockId,
                                 transferData.Stream,
                                 null,
                                 Utils.GenerateConditionWithCustomerCondition(this.destLocation.AccessCondition, true),
