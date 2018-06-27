@@ -33,3 +33,10 @@ steps:
   displayName: Publish Artifacts
   inputs:
     ArtifactName: DataMovement
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet push
+  inputs:
+    command: push
+    publishVstsFeed: '2a3515a1-1d12-4537-bf9b-b48a277ec1a4'
+  condition: and(succeeded(), or(eq(variables['GitVersion.PreReleaseLabel'], 'beta'), eq(variables['GitVersion.PreReleaseLabel'], '')))
