@@ -6,6 +6,7 @@ steps:
 - task: gittools.gitversion.gitversion-task.GitVersion@3
   displayName: GitVersion  
   inputs:
+    updateAssemblyInfo: true
     updateAssemblyInfoFilename: 'tools/AssemblyInfo/SharedAssemblyInfo.cs'
 
 - task: DotNetCoreCLI@2
@@ -19,3 +20,16 @@ steps:
   displayName: dotnet build
   inputs:
     projects: 'lib/DataMovement.csproj'
+
+- task: NuGetCommand@2
+  displayName: NuGet pack
+  inputs:
+    command: pack
+    packagesToPack: 'lib/DataMovement.csproj'
+    versioningScheme: byEnvVar
+    versionEnvVar: GitVersion.SemVer
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifacts
+  inputs:
+    ArtifactName: DataMovement
