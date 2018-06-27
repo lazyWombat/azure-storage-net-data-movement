@@ -1,5 +1,7 @@
 # Microsoft Azure Storage Data Movement Library (0.9.0)
 
+This library has been modified by WTW to support vGrid data transfer library.
+
 The Microsoft Azure Storage Data Movement Library designed for high-performance uploading, downloading and copying Azure Storage Blob and File. This library is based on the core data movement framework that powers [AzCopy](https://azure.microsoft.com/documentation/articles/storage-use-azcopy/).
 
 For more information about the Azure Storage, please visit [Microsoft Azure Storage Documentation](https://azure.microsoft.com/documentation/services/storage/).
