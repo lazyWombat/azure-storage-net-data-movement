@@ -1,3 +1,8 @@
+trigger:
+- develop
+- release/*
+- hotfix/*
+- feature/*
 resources:
 - repo: self
 queue:
