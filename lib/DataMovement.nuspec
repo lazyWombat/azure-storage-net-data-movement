@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+    <metadata>
+        <id>WTW.Azure.DataMovement</id>
+        <version>0.1.0</version>
+        <authors>Willis Towers Watson</authors>
+        <owners>Willis Towers Watson</owners>
+        <copyright>Copyright 2018</copyright>
+        <summary>WTW version of AzureStorage.NET.DataMovement library</summary>
+        <description>Azure Data Movement library</description>
+        <tags>Azure, Storage, Blob, File, DataMovement</tags>
+    </metadata>    
+</package>
