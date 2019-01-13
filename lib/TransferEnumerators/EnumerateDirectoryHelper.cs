@@ -217,6 +217,11 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferEnumerators
                     // Ignore this folder if we have no right to discovery it.
                     continue;
                 }
+                catch (UnauthorizedAccessException)
+                {
+                    // Ignore this folder if we have no right to discovery it.
+                    continue;
+                }
 #else // CODE_ACCESS_SECURITY
                 try
                 {
@@ -224,7 +229,11 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferEnumerators
                     // since the OS can block access to some paths. Getting files from a location
                     // will force path discovery checks which will indicate whether or not the user
                     // is authorized to access the directory.
-                    LongPathDirectory.GetFiles(folder);
+                    foreach (var fileItem in LongPathDirectory.EnumerateFileSystemEntries(folder, "*", SearchOption.TopDirectoryOnly))
+                    {
+                        // Just try to get the first item in directly to check whether has permission to access the directory.
+                        break;
+                    }
                 }
                 catch (SecurityException)
                 {
@@ -236,7 +245,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferEnumerators
                     // Ignore this folder if we have no right to discovery it.
                     continue;
                 }
-                catch (IOException ex)
+                catch (Exception ex)
                 {
                     throw new TransferException(string.Format(CultureInfo.CurrentCulture, Resources.EnumerateDirectoryException, folder), ex);
                 }
@@ -256,7 +265,14 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferEnumerators
                     }
 
                     // Load files directly under this folder.
-                    foreach (var filePath in LongPathDirectory.EnumerateFileSystemEntries(folder, filePattern, SearchOption.TopDirectoryOnly))
+                    foreach (var filePath in Utils.CatchException(() =>
+                        {
+                            return LongPathDirectory.EnumerateFileSystemEntries(folder, filePattern, SearchOption.TopDirectoryOnly);
+                        },
+                        (ex) =>
+                        {
+                            throw new TransferException(string.Format(CultureInfo.CurrentCulture, Resources.EnumerateDirectoryException, folder), ex);
+                        }))
                     {
                         Utils.CheckCancellation(cancellationToken);
 
@@ -290,6 +306,10 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferEnumerators
                         catch (FileNotFoundException) { }
                         catch (IOException) { }
                         catch (UnauthorizedAccessException) { }
+                        catch (Exception ex)
+                        {
+                            throw new TransferException(string.Format(CultureInfo.CurrentCulture, Resources.FailedToGetFileInfoException, filePath), ex);
+                        }
 
                         if (null == fileEntryInfo)
                         {
@@ -357,7 +377,14 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferEnumerators
                     }
 
                     // Add sub-folders.
-                    foreach (var filePath in LongPathDirectory.EnumerateFileSystemEntries(folder, "*", SearchOption.TopDirectoryOnly))
+                    foreach (var filePath in Utils.CatchException(() =>
+                        {
+                            return LongPathDirectory.EnumerateFileSystemEntries(folder, "*", SearchOption.TopDirectoryOnly);
+                        },
+                        (ex) =>
+                        {
+                            throw new TransferException(string.Format(CultureInfo.CurrentCulture, Resources.EnumerateDirectoryException, folder), ex);
+                        }))
                     {
                         Utils.CheckCancellation(cancellationToken);
 
@@ -383,7 +410,11 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferEnumerators
                         catch (FileNotFoundException) { }
                         catch (IOException) { }
                         catch (UnauthorizedAccessException) { }
-                        
+                        catch (Exception ex)
+                        {
+                            throw new TransferException(string.Format(CultureInfo.CurrentCulture, Resources.FailedToGetFileInfoException, filePath), ex);
+                        }
+
                         if (null == fileEntryInfo)
                         {
                             continue;
@@ -477,9 +508,17 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferEnumerators
 
                     UnixSymbolicLinkInfo symlinkInfo = fileSystemInfo as UnixSymbolicLinkInfo;
 
-                    if (symlinkInfo.HasContents && symlinkInfo.GetContents().IsDirectory)
+                    try
                     {
-                        fileEntryInfo.FileAttributes |= FileAttributes.Directory;
+                        if (symlinkInfo.HasContents && symlinkInfo.GetContents().IsDirectory)
+                        {
+                            fileEntryInfo.FileAttributes |= FileAttributes.Directory;
+                        }
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Just ignore exception thrown here. 
+                        // later there will be "FileNotFoundException" thrown out when trying to open the file before transferring.
                     }
                 }
 

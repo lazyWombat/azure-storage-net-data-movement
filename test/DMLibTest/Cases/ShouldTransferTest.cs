@@ -3,6 +3,7 @@
 //    Copyright (c) Microsoft Corporation
 // </copyright>
 //------------------------------------------------------------------------------
+
 namespace DMLibTest.Cases
 {
     using DMLibTestCodeGen;
@@ -76,7 +77,7 @@ namespace DMLibTest.Cases
             DirectoryTransferContext dirTransferContext = new DirectoryTransferContext();
 
             List<String> notTransferredFileNames = new List<String>();
-            dirTransferContext.ShouldTransferCallback = (source, dest) =>
+            dirTransferContext.ShouldTransferCallbackAsync = async (source, dest) =>
             {
                 if (Helper.RandomBoolean())
                 {

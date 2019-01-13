@@ -95,6 +95,19 @@ namespace DMLibTest
         }
     }
 
+    public class DummyTransferTestFixture : IDisposable
+    {
+        public DummyTransferTestFixture()
+        {
+            DummyTransferTest.MyClassInitialize(null);
+        }
+
+        public void Dispose()
+        {
+            DummyTransferTest.MyClassCleanup();
+        }
+    }
+
     public class FollowSymlinkTestFixture : IDisposable
     {
         public FollowSymlinkTestFixture()
@@ -134,15 +147,15 @@ namespace DMLibTest
         }
     }
 
-    public class NonseekableStreamTestFixture : IDisposable
+    public class StreamTestFixture : IDisposable
     {
-        public NonseekableStreamTestFixture()
+        public StreamTestFixture()
         {
-            NonseekableStreamTest.MyClassInitialize(null);
+            StreamTest.MyClassInitialize(null);
         }
         public void Dispose()
         {
-            NonseekableStreamTest.MyClassCleanup();
+            StreamTest.MyClassCleanup();
         }
     }
 

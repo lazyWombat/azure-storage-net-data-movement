@@ -1,4 +1,6 @@
-# Microsoft Azure Storage Data Movement Library (0.7.0)
+# Microsoft Azure Storage Data Movement Library (0.9.0)
+
+This library has been modified by WTW to support vGrid data transfer library.
 
 This library has been modified by WTW to support vGrid data transfer library.
 

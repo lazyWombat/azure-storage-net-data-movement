@@ -1,3 +1,32 @@
+2018.10.25 Version 0.9.0
+ * All Services on both .Net Framework and .Net Core
+   - Upgrade azure storage client library to 9.3.2
+   - Enhance exception handling during enumeration to add more detailed error messages
+   - Disable transational MD5 on sync copying when using HTTPS protocol
+   - Change to overwrite destination's metadata with source's metadata in async copying instead of keeping destination's metadata
+   - Add support for download from the same Azure Blob/Azure File to different Stream intances with multiple transfer jobs
+
+2018.07.31 Version 0.8.1
+ * All Services on both .Net Framework and .Net Core
+   - Upgrade azure storage client library to 9.3.0
+   - Enhance exception handling during enumeration to avoid throwing out unexpected exceptions
+ * Blob Service
+   - Optimize on block blob uploading and downloading
+
+2018.06.14 Version 0.8.0
+ * All Services on both .Net Framework and .Net Core
+   - Changed following callbacks to asynchronized methods:
+     ShouldOverwriteCallback --> ShouldOverwriteCallbackAsync
+     ShouldTransferCallback --> ShouldTransferCallbackAsync
+     SetAttributesCallback --> SetAttributesCallbackAsync
+ * Blob Service
+   - Added support for directory markers (hdi_isfolder=true) produced by Hadoop file system drivers for Blob storage
+   - Use the value set in TransferConfigurations.BlockSize as threshold to upload block blob with a single put blob request, the default value is 4MB 
+
+2018.02.10 Version 0.7.1
+ * All Services on both .Net Framework and .Net Core
+   - Upgraded azure storage client library to 9.0.0 
+
 2017.12.22 Version 0.7.0
  * All Services on both .Net Framework and .Net Core
    - Added support of uploading from non-seekable, non-fixed sized stream to block blob or append blob

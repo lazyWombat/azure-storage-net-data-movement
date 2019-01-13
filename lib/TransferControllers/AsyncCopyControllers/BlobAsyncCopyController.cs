@@ -88,6 +88,11 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
         {
             AccessCondition destAccessCondition = Utils.GenerateConditionWithCustomerCondition(this.destLocation.AccessCondition);
 
+            // To copy from source to blob, DataMovement Library should overwrite destination's properties and meta datas.
+            // Clear destination's meta data here to avoid using destination's meta data.
+            // Please reference to https://docs.microsoft.com/en-us/rest/api/storageservices/Copy-Blob.
+            this.destBlob.Metadata.Clear();
+
             if (null != this.SourceUri)
             {
                 return this.destBlob.StartCopyAsync(
@@ -174,12 +179,12 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement.TransferControllers
             return this.destBlob.CopyState;
         }
 
-        protected override async Task SetAttributesAsync(SetAttributesCallback setCustomAttributes)
+        protected override async Task SetAttributesAsync(SetAttributesCallbackAsync setCustomAttributes)
         {
             var originalAttributes = Utils.GenerateAttributes(this.destBlob);
             var originalMetadata = new Dictionary<string, string>(this.destBlob.Metadata);
 
-            setCustomAttributes(this.destBlob);
+            await setCustomAttributes(this.destBlob);
 
             if (!Utils.CompareProperties(originalAttributes, Utils.GenerateAttributes(this.destBlob)))
             {

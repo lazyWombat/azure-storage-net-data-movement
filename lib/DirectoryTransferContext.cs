@@ -34,7 +34,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// Initializes a new instance of the <see cref="DirectoryTransferContext" /> class.
         /// </summary>
         /// <param name="journalStream">The stream into which the transfer journal info will be written into. 
-        /// It can resume the previours paused transfer from its journal stream.</param>
+        /// It can resume the previous paused transfer from its journal stream.</param>
         public DirectoryTransferContext(Stream journalStream)
             :base(journalStream)
         {
@@ -43,7 +43,7 @@ namespace Microsoft.WindowsAzure.Storage.DataMovement
         /// <summary>
         /// Gets or sets the callback invoked to tell whether a transfer should be done.
         /// </summary>
-        public ShouldTransferCallback ShouldTransferCallback
+        public ShouldTransferCallbackAsync ShouldTransferCallbackAsync
         {
             get;
             set;
